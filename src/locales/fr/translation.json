@@ -1,0 +1,63 @@
+{
+  "bar": {
+    "background": "Background",
+    "cb": "CB",
+    "home": "Accueil",
+    "logout": "Sortir"
+  },
+  "chest": {
+    "secret": "Insérer la clé",
+    "submit": "Entrer",
+    "keyoff": "Retirer la clé",
+    "GET_CHEST_USECASE_WRONG_SECRET": "Mauvaise clé",
+    "newThing": "Nouveau",
+    "export": "Exporter",
+    "leave": "Abandonner",
+    "leaved": "Coffre abandonné",
+    "leaveTitle": "Ne plus voir le coffre",
+    "copy": {
+      "credential": {
+        "id": "Identifiant copié",
+        "password": "Mot de passe copié",
+        "address": "Adresse copié"
+      },
+      "cb": {
+        "number": "Numéro copié",
+        "code": "Code copié",
+        "crypto": "Crypto copié",
+        "label": "Nom copié",
+        "expiration_date": "Date d'expiration copié"
+      }, 
+      "code": {
+        "code": "Code copié"
+      }, 
+      "note": {
+        "note": "Note copié"
+      }
+    }
+  },
+  "common": {
+    "done": "Valider",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "loading": "Chargement..."
+  },
+  "footer": {
+    "mail": "Mail",
+    "roadmap": "Roadmap",
+    "issues": "Anomalies",
+    "version": {
+      "ext": "Ext:",
+      "apis": "Apis:"
+    }
+  },
+  "home": {
+    "title": "Accueil"
+  },
+  "login": {
+    "title": "Authentification",
+    "login": "Identifiant",
+    "password": "Mot de passe",
+    "error": "Erreur : "
+  }
+}
