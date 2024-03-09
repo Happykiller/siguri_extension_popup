@@ -1,25 +1,20 @@
 import * as React from 'react';
-import AddIcon from '@mui/icons-material/Add';
+import { Trans } from 'react-i18next';
 import LoginIcon from '@mui/icons-material/Login';
-import ShareIcon from '@mui/icons-material/Share';
 import GroupIcon from '@mui/icons-material/Group';
-import { Trans, useTranslation } from 'react-i18next';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-import { Button, Divider, Grid, IconButton, InputBase, Paper, TextField, Tooltip, Typography } from '@mui/material';
+import { Grid, IconButton, Tooltip, Typography } from '@mui/material';
 
 import '@component/common.scss';
 import Bar from '@component/bar';
 import { CODES } from '@src/common/codes';
 import { Footer } from '@component/footer';
 import inversify from '@src/common/inversify';
-import { RouterStoreModel, routerStore } from '@component/routerStore';
+import { routerStore } from '@component/routerStore';
 import { ChestUsecaseModel } from '@usecase/model/chest.usecase.model';
 import { ContextStoreModel, contextStore } from '@component/contextStore';
 import { GetChestsUsecaseModel } from '@usecase/getChests/getChests.usecase.model';
 
 export const Home = () => {
-  const routeur:RouterStoreModel = routerStore();
-  const { t } = useTranslation();
   const context:ContextStoreModel = contextStore();
   const [chests, setChest] = React.useState<ChestUsecaseModel[]>(null);
   const [qry, setQry] = React.useState({
@@ -102,25 +97,16 @@ export const Home = () => {
           justifyContent="center"
           alignItems="center"
         >
-          Label
-        </Grid>
-        <Grid 
-          xs={1}
-          item
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          Auteur
+          <Trans>home.label</Trans>
         </Grid>
         <Grid
           item
-          xs={6}
+          xs={7}
           display="flex"
           justifyContent="center"
           alignItems="center"
         >
-          Description
+          <Trans>home.description</Trans>
         </Grid>
         <Grid
           item
@@ -149,18 +135,8 @@ export const Home = () => {
             <Typography noWrap>{chest.label}</Typography>
           </Grid>
           <Grid 
-            xs={1}
             item
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            title={chest.author.code}
-          >
-            <Typography noWrap>{chest.author.code}</Typography>
-          </Grid>
-          <Grid 
-            item
-            xs={6}
+            xs={7}
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -170,12 +146,9 @@ export const Home = () => {
           </Grid>
           <Grid
             xs={2}
-            sx={{
-              paddingRight: '15px'
-            }}
             item
             display="flex"
-            justifyContent="center"
+            justifyContent="right"
             alignItems="center"
           >
             {/* Other user ? */}

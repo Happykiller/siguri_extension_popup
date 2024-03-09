@@ -6,11 +6,29 @@
     "logout": "Sortir"
   },
   "chest": {
+    "cb": {
+      "number": "Numéro: ",
+      "code": "Code: ",
+      "crypto": "Cryptograme: ",
+      "expiration_date": "Date d'expiration: ",
+      "label": "Nom: "
+    },
+    "code": {
+      "code": "Code: "
+    },
+    "credential": {
+      "id": "Identifiant: ",
+      "password": "Mot de passe: ",
+      "address": "Adresse: "
+    },
     "secret": "Insérer la clé",
     "submit": "Entrer",
     "keyoff": "Retirer la clé",
     "GET_CHEST_USECASE_WRONG_SECRET": "Mauvaise clé",
     "newThing": "Nouveau",
+    "note": {
+      "note": "Node: "
+    },
     "export": "Exporter",
     "leave": "Abandonner",
     "leaved": "Coffre abandonné",
@@ -52,7 +70,9 @@
     }
   },
   "home": {
-    "title": "Accueil"
+    "title": "Accueil",
+    "label": "Label",
+    "description": "Description"
   },
   "login": {
     "title": "Authentification",

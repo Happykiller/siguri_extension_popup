@@ -64,7 +64,12 @@ function Bar() {
             noWrap
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' }
+              display: { xs: 'none', md: 'flex' },
+              cursor: 'pointer'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              routeur.navigateTo("/");
             }}
           >
             Siguri
@@ -112,7 +117,12 @@ function Bar() {
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
-              flexGrow: 1
+              flexGrow: 1,
+              cursor: 'pointer'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              routeur.navigateTo("/");
             }}
           >
             Siguri
