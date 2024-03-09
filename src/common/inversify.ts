@@ -26,7 +26,6 @@ export class Inversify {
   constructor() {
     // Usecases
     this.authUsecase = new AuthUsecase(this);
-    this.loggerService = new LoggerServiceReal();
     this.sessionInfo = new SessionInfoUsecase(this);
     this.getChestUsecase = new GetChestUsecase(this);
     this.getThingUsecase = new GetThingUsecase(this);
@@ -35,6 +34,7 @@ export class Inversify {
     this.systemInfoUsecase = new SystemInfoUsecase(this);
 
     // Services
+    this.loggerService = new LoggerServiceReal();
     if (config.mode === 'prod') {
       this.graphqlService = new GraphqlServiceFetch(this);
     } else {
