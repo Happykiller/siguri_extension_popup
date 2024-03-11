@@ -1,5 +1,5 @@
 const path = require("path")
-const { DefinePlugin } = require('webpack')
+const { DefinePlugin, ProvidePlugin } = require('webpack')
 const HtmlWebpackPlugin = require("html-webpack-plugin") 
 
 const dotenv = require('dotenv').config().parsed;
@@ -24,14 +24,20 @@ module.exports = {
   },
   devtool: "source-map",
   resolve: { 
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      buffer: require.resolve('buffer'),
+      stream: require.resolve('stream-browserify'),
+      vm: require.resolve("vm-browserify"),
+    },
     extensions: [".ts", ".tsx", ".js", ".json", '.scss', '.svg'],
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
       '@component': path.resolve(__dirname, 'src/component/'),
       '@usecase': path.resolve(__dirname, 'src/usecase/'),
       '@service': path.resolve(__dirname, 'src/service/'),
-    },
-    fallback: { "crypto": false }
+    }
   }, 
   output: { 
     path: path.join(__dirname, "/dist"), 
@@ -68,6 +74,10 @@ module.exports = {
     }),
     new DefinePlugin({
       'process.env': JSON.stringify(config)
+    }),
+    new ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
   ]
 }

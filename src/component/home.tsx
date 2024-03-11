@@ -121,7 +121,8 @@ export const Home = () => {
           key={chest.id}
           container
           sx={{
-            backgroundColor: '#1A2027'
+            backgroundColor: '#1A2027',
+            marginBottom:'1px',
           }}
         >
           <Grid 

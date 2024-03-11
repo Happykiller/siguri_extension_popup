@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { authenticator  } from 'otplib';
 import { Key } from '@mui/icons-material';
 import NotesIcon from '@mui/icons-material/Notes';
 import KeyOffIcon from '@mui/icons-material/KeyOff';
@@ -7,6 +8,7 @@ import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PasswordIcon from '@mui/icons-material/Password';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -32,6 +34,7 @@ export const Chest = () => {
   const flash:FlashStore = flashStore();
   const routeur:RouterStoreModel = routerStore();
   const context:ContextStoreModel = contextStore();
+  const [time, setTime] = React.useState(new Date());
   const [openRowChild, setOpenRowChild] = React.useState(null);
   const [secretVisible, setSecretVisible] = React.useState(false);
   const [things, setThings] = React.useState<ThingUsecaseModel[]>(null);
@@ -42,6 +45,15 @@ export const Chest = () => {
     data: null,
     error: null
   });
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setTime(now);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSetSecret = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -76,6 +88,31 @@ export const Chest = () => {
   const copy = (dto: { value: string, type: string}) => {
     navigator.clipboard.writeText(dto.value);
     flash.open(t(`chest.copy.${dto.type}`));
+  }
+
+  const TokenTotp = (props: { secret: string }) => {
+    const { secret } = props;
+    const token = authenticator.generate(secret);
+    const left = (time.getSeconds() > 30)?60-time.getSeconds():30-time.getSeconds();
+    return (
+      <>
+        <Typography noWrap>{token}</Typography>
+        <IconButton
+          aria-label="copier"
+          size="small"
+          onClick={(e) => {
+            e.preventDefault();
+            copy({
+              value: token,
+              type: 'totp.token'
+            })
+          }}
+        >
+          <ContentCopyIcon />
+        </IconButton>
+        {left}s
+      </>
+    )
   }
 
   const RowChild = (props: { thing: ThingUsecaseModel }) => {
@@ -327,6 +364,48 @@ export const Chest = () => {
           </Grid>
         </Grid>
       )
+    } else if (thing.type === THING_TYPES.TOTP) {
+      return (
+        <Grid 
+          container
+        >
+          <Grid 
+            xs={6}
+            item
+            display={(thing.totp.secret) ? "flex" : "none"}
+            justifyContent="center"
+            alignItems="center"
+            title={t(`chest.totp.secret`)+thing.totp.secret}
+          >
+            <Typography noWrap>{thing.totp.secret}</Typography>
+            <IconButton
+              aria-label="copier"
+              size="small"
+              onClick={(e) => {
+                e.preventDefault();
+                copy({
+                  value: thing.totp.secret,
+                  type: 'totp.secret'
+                })
+              }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Grid>
+          <Grid 
+            xs={6}
+            item
+            display={(thing.totp.secret) ? "flex" : "none"}
+            justifyContent="center"
+            alignItems="center"
+            title={t(`chest.totp.token`)}
+          >
+            <TokenTotp
+              secret={thing.totp.secret}
+            />
+          </Grid>
+        </Grid>
+      )
     } else if (thing.type === 'NOTE') {
       return (
         <Grid 
@@ -375,7 +454,8 @@ export const Chest = () => {
       <Grid
         container
         sx={{
-          backgroundColor: '#1A2027'
+          backgroundColor: '#1A2027',
+          marginBottom:'1px'
         }}
       >
         <Grid 
@@ -390,6 +470,7 @@ export const Chest = () => {
           {(thing.type === THING_TYPES.CODE)?<KeyboardIcon />:''}
           {(thing.type === THING_TYPES.NOTE)?<NotesIcon />:''}
           {(thing.type === THING_TYPES.CREDENTIAL)?<PasswordIcon />:''}
+          {(thing.type === THING_TYPES.TOTP)?<HourglassTopIcon />:''}
           &nbsp;
           <Typography noWrap>{thing.label}</Typography>
         </Grid>
@@ -414,22 +495,32 @@ export const Chest = () => {
             size="small"
             onClick={(e) => {
               e.preventDefault();
-              if (!openRowChild) {
-                setOpenRowChild({
-                  thing_id: thing.id 
+              if (routeur.data?.thing_id === thing.id) {
+                routerStore.setState({ 
+                  route: routeur.route,
+                  data: {
+                    ... routeur.data,
+                    thing_id: null
+                  }
                 });
               } else {
-                setOpenRowChild(null);
+                routerStore.setState({ 
+                  route: routeur.route,
+                  data: {
+                    ... routeur.data,
+                    thing_id: thing.id 
+                  }
+                });
               }
             }}
           >
-            {openRowChild ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {(routeur.data?.thing_id === thing.id) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </Grid>
         <Grid 
           xs={12}
           item
-          display={(openRowChild?.thing_id !== thing.id) ? "none" : "flex"}
+          display={(routeur.data?.thing_id !== thing.id) ? "none" : "flex"}
         >
           <RowChild thing={thing} />
         </Grid>

@@ -78,6 +78,6 @@
     "title": "Authentification",
     "login": "Identifiant",
     "password": "Mot de passe",
-    "error": "Erreur : "
+    "AUTH_FAIL_WRONG_CREDENTIAL": "Identifiants incorrects"
   }
 }

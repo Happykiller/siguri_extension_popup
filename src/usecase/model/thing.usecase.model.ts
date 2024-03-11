@@ -24,6 +24,9 @@ export interface ThingUsecaseModel {
   note?: {
     note: string;
   };
+  totp?: {
+    secret: string;
+  };
   credential?: {
     id: string;
     password: string;

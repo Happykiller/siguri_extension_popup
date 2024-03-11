@@ -142,7 +142,7 @@ function Bar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={context.code}>{context.code}</Avatar>
+                <Avatar alt={context.code}>{context.code.substring(0,3)}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

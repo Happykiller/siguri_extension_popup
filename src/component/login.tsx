@@ -21,7 +21,7 @@ export const Login = () => {
 
   let errorMessage = <div></div>;
   if(currentMsg) {
-    errorMessage = <div><Trans>login.error</Trans><Trans>{currentMsg}</Trans></div>
+    errorMessage = <div><Trans>login.{currentMsg}</Trans></div>
   }
 
   const handleClick = async (event: React.SyntheticEvent) => {
@@ -79,6 +79,7 @@ export const Login = () => {
               label={<Trans>login.password</Trans>}
               variant="standard"
               size="small"
+              autoComplete='false'
               type={(passVisible)?'text':'password'}
               onChange={(e) => { 
                 e.preventDefault();
