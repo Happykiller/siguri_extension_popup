@@ -1,47 +1,147 @@
 import * as React from 'react';
 import { Trans } from 'react-i18next';
 import { Done } from '@mui/icons-material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, Button, InputAdornment, TextField } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import '@component/login.scss';
-import { Footer } from '@component/footer';
+import { CODES } from '@src/common/codes';
+import { REGEX } from '@src/common/REGEX';
 import inversify from '@src/common/inversify';
-import { routerStore } from '@component/routerStore';
-import { contextStore } from '@component/contextStore';
+import { Input } from '@component/molecule/input';
+import { Footer } from '@component/molecule/footer';
+import { routerStore } from '@component/store/routerStore';
+import { contextStore } from '@component/store/contextStore';
 import { AuthUsecaseModel } from '@usecase/auth/model/auth.usecase.model';
 
 export const Login = () => {
   const routeur = routerStore();
-  const [currentMsg, setCurrentMsg] = React.useState('');
-  const [currentLogin, setCurrentLogin] = React.useState('');
-  const [passVisible, setPassVisible] = React.useState(false);
-  const [currentPassword, setCurrentPassword] = React.useState('');
+  const [qry, setQry] = React.useState({
+    loading: null,
+    data: null,
+    error: null
+  });
 
-  let errorMessage = <div></div>;
-  if(currentMsg) {
-    errorMessage = <div><Trans>login.{currentMsg}</Trans></div>
-  }
+  const [formEntities, setFormEntities] = React.useState({
+    login: {
+      value: '',
+      valid: false
+    },
+    password: {
+      value: '',
+      valid: false
+    }
+  });
 
   const handleClick = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    const response:AuthUsecaseModel = await inversify.authUsecase.execute({
-      login: currentLogin,
-      password: currentPassword
+    setQry(qry => ({
+      ...qry,
+      loading: true
+    }));
+    inversify.authUsecase.execute({
+      login: formEntities.login.value,
+      password: formEntities.password.value
+    }).then((response:AuthUsecaseModel) => {
+      if(response.message === CODES.SUCCESS) {
+        contextStore.setState({ 
+          id: response.data.id,
+          code: response.data.code,
+          access_token: response.data.access_token,
+          name_first: response.data.name_first,
+          name_last: response.data.name_last,
+        });
+        routeur.navigateTo('/');
+      } else {
+        inversify.loggerService.debug(response.error);
+        setQry(qry => ({
+          ...qry,
+          error: response.message
+        }));
+      }
+    })
+    .catch((error:any) => {
+      setQry(qry => ({
+        ...qry,
+        error: error.message
+      }));
+    })
+    .finally(() => {
+      setQry(qry => ({
+        ...qry,
+        loading: false
+      }));
     });
-    if (response.data) {
-      contextStore.setState({ 
-        id: response.data.id,
-        code: response.data.code,
-        access_token: response.data.access_token,
-        name_first: response.data.name_first,
-        name_last: response.data.name_last,
-      });
-      routeur.navigateTo('/');
-    } else {
-      setCurrentMsg(response.message);
-    }
+  }
+
+  let form = <div></div>;
+  if(qry.loading) {
+    form = <div><Trans>common.loading</Trans></div>;
+  } else {
+    form = <form
+    onSubmit={handleClick}
+  >
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{ 
+        flexDirection: 'column',
+        gap: '10px;'
+      }}
+    >
+      {/* Login */}
+      <Input
+        label={<Trans>login.login</Trans>}
+        tooltip={<Trans>REGEX.LOGIN</Trans>}
+        regex={REGEX.LOGIN}
+        entity={formEntities.login}
+        onChange={(entity:any) => { 
+          setFormEntities({
+            ... formEntities,
+            login: {
+              value: entity.value,
+              valid: entity.valid
+            }
+          });
+        }}
+        require
+        virgin
+      />
+
+      {/* Password */}
+      <Input
+        label={<Trans>login.password</Trans>}
+        tooltip={<Trans>REGEX.PASSWORD</Trans>}
+        regex={REGEX.PASSWORD}
+        type='password'
+        entity={formEntities.password}
+        onChange={(entity:any) => { 
+          setFormEntities({
+            ... formEntities,
+            password: {
+              value: entity.value,
+              valid: entity.valid
+            }
+          });
+        }}
+        require
+        virgin
+      />
+
+      {/* Submit button */}
+      <Button 
+        type="submit"
+        variant="contained"
+        size="small"
+        startIcon={<Done />}
+        disabled={!(formEntities.login.valid && formEntities.password.valid)}
+      ><Trans>common.done</Trans></Button>
+    </Box>
+  </form>
+  }
+
+  let errorMessage = <div></div>;
+  if(qry.error) {
+    errorMessage = <div><Trans>login.{qry.error}</Trans></div>
   }
 
   return (
@@ -50,69 +150,12 @@ export const Login = () => {
         <Trans>login.title</Trans>
       </div>
       <div>
-        <form
-          onSubmit={handleClick}
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={{ 
-              flexDirection: 'column',
-              gap: '10px;'
-            }}
-          >
-            {/* Field Login */}
-            <TextField
-              sx={{ marginRight:1}}
-              label={<Trans>login.login</Trans>}
-              variant="standard"
-              size="small"
-              onChange={(e) => { 
-                e.preventDefault();
-                setCurrentLogin(e.target.value);
-              }}
-            />
-
-            {/* Field Password */}
-            <TextField
-              sx={{ marginRight:1}}
-              label={<Trans>login.password</Trans>}
-              variant="standard"
-              size="small"
-              autoComplete='false'
-              type={(passVisible)?'text':'password'}
-              onChange={(e) => { 
-                e.preventDefault();
-                setCurrentPassword(e.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment 
-                    position="end"
-                    onClick={(e) => { 
-                      e.preventDefault();
-                      setPassVisible(!passVisible);
-                    }}
-                  >
-                    {(passVisible?<VisibilityOffIcon/>:<VisibilityIcon />)}
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            {/* Submit button */}
-            <Button 
-              type="submit"
-              variant="contained"
-              size="small"
-              startIcon={<Done />}
-              disabled={!(currentLogin.length > 3 && currentPassword.length > 3)}
-            ><Trans>common.done</Trans></Button>
-            {errorMessage}
-          </Box>
-        </form>
+        {form}
       </div>
-      <Footer />
+      <div>
+        {errorMessage}
+      </div>
+      <Footer/>
     </div>
   )
 };

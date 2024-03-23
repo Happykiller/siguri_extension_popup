@@ -2,11 +2,10 @@ import * as React from 'react';
 import { Link } from '@mui/material';
 import { Trans } from 'react-i18next';
 
-import '@component/footer.scss';
+import '@component/molecule/footer.scss';
 import { CODES } from '@src/common/codes';
-import { version } from '../../package.json';
 import inversify from '@src/common/inversify';
-import { SystemInfoUsecaseModel } from '../usecase/system/model/systemInfo.usecase.model';
+import { version } from '../../../package.json';
 
 export const Footer = () => {
   const [apiVersion, setApiVersion] = React.useState(null);

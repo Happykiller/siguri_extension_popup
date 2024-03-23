@@ -6,8 +6,10 @@ import KeyOffIcon from '@mui/icons-material/KeyOff';
 import { Trans, useTranslation } from 'react-i18next';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PasswordIcon from '@mui/icons-material/Password';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -16,18 +18,18 @@ import { Button, Grid, IconButton, InputAdornment, TextField, Tooltip, Typograph
 
 import '@component/chest.scss';
 import '@component/common.scss';
-import Bar from '@component/bar';
+import Bar from '@component/molecule/bar';
 import { CODES } from '@src/common/codes';
-import { Footer } from '@component/footer';
+import { REGEX } from '@src/common/REGEX';
 import inversify from '@src/common/inversify';
+import { Footer } from '@component/molecule/footer';
 import { THING_TYPES } from '@src/common/thingTypes';
-import { FlashStore, flashStore} from '@component/flash';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { RouterStoreModel, routerStore } from '@component/routerStore';
+import { FlashStore, flashStore} from '@component/molecule/flash';
 import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';
-import { ContextStoreModel, contextStore } from '@component/contextStore';
+import { RouterStoreModel, routerStore } from '@component/store/routerStore';
+import { ContextStoreModel, contextStore } from '@component/store/contextStore';
 import { GetThingsUsecaseModel } from '@usecase/getThings/getThings.usecase.model';
+import { Input } from './molecule/input';
 
 export const Chest = () => {
   const { t } = useTranslation();
@@ -35,11 +37,12 @@ export const Chest = () => {
   const routeur:RouterStoreModel = routerStore();
   const context:ContextStoreModel = contextStore();
   const [time, setTime] = React.useState(new Date());
-  const [openRowChild, setOpenRowChild] = React.useState(null);
-  const [secretVisible, setSecretVisible] = React.useState(false);
   const [things, setThings] = React.useState<ThingUsecaseModel[]>(null);
   const se = context.chests_secret?.find((elt) => elt.id === routeur.data.chest_id)?.secret ?? '';
-  const [secretForm, setSecretForm] = React.useState(se);
+  const [secretForm, setSecretForm] = React.useState({
+    value: se,
+    valid: false
+  });
   const [qry, setQry] = React.useState({
     loading: false,
     data: null,
@@ -60,12 +63,12 @@ export const Chest = () => {
     if(!context.chests_secret) {
       context.chests_secret = [{
         id: routeur.data.chest_id,
-        secret: secretForm
+        secret: secretForm.value
       }];
     } else {
       context.chests_secret.push({
         id: routeur.data.chest_id,
-        secret: secretForm
+        secret: secretForm.value
       });
     }
     contextStore.setState({ 
@@ -454,8 +457,11 @@ export const Chest = () => {
       <Grid
         container
         sx={{
-          backgroundColor: '#1A2027',
-          marginBottom:'1px'
+          backgroundColor: '#3C4042',
+          marginBottom:'1px',
+          "&:hover": {
+            backgroundColor: "#606368"
+          }
         }}
       >
         <Grid 
@@ -548,29 +554,20 @@ export const Chest = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <TextField
-          sx={{ marginRight:1}}
+        <Input
           label={<Trans>chest.secret</Trans>}
-          variant="standard"
-          size="small"
-          type={(secretVisible)?'text':'password'}
-          onChange={(e) => { 
-            e.preventDefault();
-            setSecretForm(e.target.value);
+          tooltip={<Trans>REGEX.CHEST_KEY</Trans>}
+          regex={REGEX.CHEST_KEY}
+          type="password"
+          entity={secretForm}
+          onChange={(entity:any) => { 
+            setSecretForm({
+              value: entity.value,
+              valid: entity.valid
+            });
           }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment 
-                position="end"
-                onClick={(e) => { 
-                  e.preventDefault();
-                  setSecretVisible(!secretVisible);
-                }}
-              >
-                {(secretVisible?<VisibilityOffIcon/>:<VisibilityIcon />)}
-              </InputAdornment>
-            ),
-          }}
+          require
+          virgin
         />
       </Grid>
 
@@ -588,6 +585,7 @@ export const Chest = () => {
           variant="contained"
           size="small"
           startIcon={<Key />}
+          disabled={!secretForm.valid}
         ><Trans>chest.submit</Trans></Button>
       </Grid>
 
@@ -692,7 +690,7 @@ export const Chest = () => {
             sx={{
               color: "#000000",
               fontWeight: "bold",
-              backgroundColor: "#BB86FC",
+              backgroundColor: "#EA80FC",
               borderRadius: "5px 5px 0px 0px",
               fontSize: "0.875rem"
             }}

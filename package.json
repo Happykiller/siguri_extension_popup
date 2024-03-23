@@ -1,6 +1,6 @@
 {
   "name": "siguri_extension_popup",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Extension popoup for Siguri service",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",

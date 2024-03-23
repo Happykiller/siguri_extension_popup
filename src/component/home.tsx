@@ -5,13 +5,13 @@ import GroupIcon from '@mui/icons-material/Group';
 import { Grid, IconButton, Tooltip, Typography } from '@mui/material';
 
 import '@component/common.scss';
-import Bar from '@component/bar';
+import Bar from '@component/molecule/bar';
 import { CODES } from '@src/common/codes';
-import { Footer } from '@component/footer';
 import inversify from '@src/common/inversify';
-import { routerStore } from '@component/routerStore';
+import { Footer } from '@component/molecule/footer';
+import { routerStore } from '@component/store/routerStore';
 import { ChestUsecaseModel } from '@usecase/model/chest.usecase.model';
-import { ContextStoreModel, contextStore } from '@component/contextStore';
+import { ContextStoreModel, contextStore } from '@component/store/contextStore';
 import { GetChestsUsecaseModel } from '@usecase/getChests/getChests.usecase.model';
 
 export const Home = () => {
@@ -85,7 +85,7 @@ export const Home = () => {
         sx={{
           color: "#000000",
           fontWeight: "bold",
-          backgroundColor: "#BB86FC",
+          backgroundColor: "#EA80FC",
           borderRadius: "5px 5px 0px 0px",
           fontSize: "0.875rem"
         }}
@@ -121,8 +121,11 @@ export const Home = () => {
           key={chest.id}
           container
           sx={{
-            backgroundColor: '#1A2027',
+            backgroundColor: '#3C4042',
             marginBottom:'1px',
+            "&:hover": {
+              backgroundColor: "#606368"
+            }
           }}
         >
           <Grid 
