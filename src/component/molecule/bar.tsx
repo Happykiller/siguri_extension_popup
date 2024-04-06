@@ -17,8 +17,8 @@ import '@component/molecule/bar.scss';
 import { routerStore } from '@component/store/routerStore';
 import { ContextStoreModel, contextStore } from '@component/store/contextStore';
 
-const pages = ['home'];
-const settings = ['logout'];
+const pages = ['home', 'password'];
+const settings = ['profile', 'logout'];
 
 function Bar() {
   const { t } = useTranslation();
@@ -42,6 +42,10 @@ function Bar() {
         routeur.navigateTo("/");
         break; 
       }
+      case t('bar.password').toLowerCase(): {
+        routeur.navigateTo("/password");
+        break; 
+      }
     } 
   };
 
@@ -50,6 +54,10 @@ function Bar() {
     switch(event.currentTarget.innerText.toLowerCase()) { 
       case t('bar.logout').toLowerCase(): {
         reset();
+        break; 
+      }
+      case t('bar.profile').toLowerCase(): {
+        routeur.navigateTo("/profile");
         break; 
       }
     } 

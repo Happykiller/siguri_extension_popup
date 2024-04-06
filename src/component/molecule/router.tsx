@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Trans } from 'react-i18next';
 
+import { Home } from '@component/home';
 import { Chest } from '@component/chest';
 import { Login } from '@component/login';
 import { CODES } from '@src/common/codes';
-import { Home } from '@component/home';
 import inversify from '@src/common/inversify';
+import { Profile } from '@component/profiile';
+import { Password } from '@component/password';
 import { routerStore } from '@component/store/routerStore';
 import { ContextStoreModel, contextStore } from '@component/store/contextStore';
 
@@ -65,6 +67,10 @@ export const Router = () => {
           return <div><Home /></div>
         case '/chest':
           return <div><Chest /></div>
+        case '/profile':
+          return <div><Profile /></div>
+        case '/password':
+          return <div><Password /></div>
         default:
           return <div><Home /></div>
       }

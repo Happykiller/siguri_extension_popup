@@ -8,13 +8,11 @@ import KeyboardIcon from '@mui/icons-material/Keyboard';
 import PasswordIcon from '@mui/icons-material/Password';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Button, Grid, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 
 import '@component/chest.scss';
 import '@component/common.scss';
@@ -22,6 +20,7 @@ import Bar from '@component/molecule/bar';
 import { CODES } from '@src/common/codes';
 import { REGEX } from '@src/common/REGEX';
 import inversify from '@src/common/inversify';
+import { Input } from '@component/molecule/input';
 import { Footer } from '@component/molecule/footer';
 import { THING_TYPES } from '@src/common/thingTypes';
 import { FlashStore, flashStore} from '@component/molecule/flash';
@@ -29,7 +28,6 @@ import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';
 import { RouterStoreModel, routerStore } from '@component/store/routerStore';
 import { ContextStoreModel, contextStore } from '@component/store/contextStore';
 import { GetThingsUsecaseModel } from '@usecase/getThings/getThings.usecase.model';
-import { Input } from './molecule/input';
 
 export const Chest = () => {
   const { t } = useTranslation();

@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Trans } from 'react-i18next';
 import { Done } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
+import KeyIcon from '@mui/icons-material/Key';
+import { client } from '@passwordless-id/webauthn';
+import { Trans, useTranslation } from 'react-i18next';
 
 import '@component/login.scss';
 import { CODES } from '@src/common/codes';
@@ -11,10 +13,15 @@ import { Input } from '@component/molecule/input';
 import { Footer } from '@component/molecule/footer';
 import { routerStore } from '@component/store/routerStore';
 import { contextStore } from '@component/store/contextStore';
+import { passkeyStore } from '@component/store/passkeyStore';
+import { FlashStore, flashStore} from '@component/molecule/flash';
 import { AuthUsecaseModel } from '@usecase/auth/model/auth.usecase.model';
 
 export const Login = () => {
   const routeur = routerStore();
+  const { t } = useTranslation();
+  const passkey = passkeyStore();
+  const flash:FlashStore = flashStore();
   const [qry, setQry] = React.useState({
     loading: null,
     data: null,
@@ -72,6 +79,44 @@ export const Login = () => {
       }));
     });
   }
+
+  const signPasskey = async () => {
+    try {
+      inversify.loggerService.debug('perform sign passkey with', passkey);
+      const authentication = await client.authenticate([passkey.credential_id], passkey.challenge, {
+        "authenticatorType": "auto",
+        "userVerification": "required",
+        "timeout": 60000
+      });
+      
+      if (authentication) {
+        const session = await inversify.authPasskeyUsecase.execute({
+          ...authentication,
+          user_code: passkey.user_code
+        });
+
+        if(session.message !== CODES.SUCCESS) {
+          inversify.loggerService.error(session.error);
+          throw new Error(session.message);
+        }
+
+        contextStore.setState({ 
+          id: session.data.id,
+          code: session.data.code,
+          access_token: session.data.access_token,
+          name_first: session.data.name_first,
+          name_last: session.data.name_last
+        });
+        routeur.navigateTo('/');
+      } else {
+        inversify.loggerService.error("signIn, failed to perform Login.");
+      }
+    } catch(e) {
+      flash.open(t(`login.${e.message}`));
+      inversify.loggerService.error(e.error);
+    }
+  
+  };
 
   let form = <div></div>;
   if(qry.loading) {
@@ -135,6 +180,18 @@ export const Login = () => {
         startIcon={<Done />}
         disabled={!(formEntities.login.valid && formEntities.password.valid)}
       ><Trans>common.done</Trans></Button>
+
+      {/* Passkeys button */}
+      <Button 
+        variant="contained"
+        size="small"
+        startIcon={<KeyIcon />}
+        disabled={!passkey.user_code}
+        onClick={(e) => { 
+          e.preventDefault();
+          signPasskey();
+        }}
+      ><Trans>login.passkey</Trans></Button>
     </Box>
   </form>
   }
