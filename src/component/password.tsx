@@ -140,38 +140,36 @@ export const Password = () => {
   }
 
   return (
-    <div className="app">
+    <div>
       <Bar/>
-      <div className="parent_container">
-        <div className="container">
-          <div className='title'>
-            <Trans>password.title</Trans>
-          </div>
-          <div>
+      <div className="app">
+        <div className='title'>
+          <Trans>password.title</Trans>
+        </div>
+        <div>
+          <Grid 
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            {/* Form */}
             <Grid 
-              container
-              rowSpacing={1}
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+              xs={12}
+              item
+              textAlign='center'
             >
-              {/* Form */}
-              <Grid 
-                xs={12}
-                item
-                textAlign='center'
-              >
-                {form}
-              </Grid>
-
-              {/* Message */}
-              <Grid 
-                xs={12}
-                item
-                textAlign='center'
-              >
-                {message}
-              </Grid>
+              {form}
             </Grid>
-          </div>
+
+            {/* Message */}
+            <Grid 
+              xs={12}
+              item
+              textAlign='center'
+            >
+              {message}
+            </Grid>
+          </Grid>
         </div>
       </div>
       <Footer />

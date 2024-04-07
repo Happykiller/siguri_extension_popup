@@ -220,107 +220,105 @@ export const Profile = () => {
   }
 
   return (
-    <div className="app">
+    <div>
       <Bar/>
-      <div className="parent_container">
-        <div className="container">
-          <div>
-            <Grid
-              container
+      <div className="app">
+        <div>
+          <Grid
+            container
+          >
+            <Grid 
+              xs={12}
+              item
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
             >
-              <Grid 
-                xs={12}
-                item
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Trans>profile.code</Trans>{context.code}
-              </Grid>
-              <Grid 
-                xs={6}
-                item
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Trans>profile.name_first</Trans>{context.name_first}
-              </Grid>
-              <Grid 
-                xs={6}
-                item
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Trans>profile.name_last</Trans>{context.name_last}
-              </Grid>
+              <Trans>profile.code</Trans>{context.code}
             </Grid>
-            <Divider
-              sx={{
-                paddingBottom: 1
+            <Grid 
+              xs={6}
+              item
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Trans>profile.name_first</Trans>{context.name_first}
+            </Grid>
+            <Grid 
+              xs={6}
+              item
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Trans>profile.name_last</Trans>{context.name_last}
+            </Grid>
+          </Grid>
+          <Divider
+            sx={{
+              paddingBottom: 1
+            }}
+          >
+            <Chip label={<Trans>profile.passkeys</Trans>} size="small" />
+          </Divider>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            {/* Add passkey */}
+            <Paper
+              component="form"
+              sx={{ 
+                p: '2px 4px', 
+                display: 'flex', 
+                alignItems: 'center'
               }}
             >
-              <Chip label={<Trans>profile.passkeys</Trans>} size="small" />
-            </Divider>
-            <Grid
-              item
-              xs={12}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              {/* Add passkey */}
-              <Paper
-                component="form"
-                sx={{ 
-                  p: '2px 4px', 
-                  display: 'flex', 
-                  alignItems: 'center'
+              <Input
+                label={<Trans>profile.passkey_label</Trans>}
+                tooltip={<Trans>REGEX.PASSKEY_LABEL</Trans>}
+                regex={REGEX.PASSKEY_LABEL}
+                entity={passkey_label}
+                onChange={(entity:any) => { 
+                  setPasskey_label({
+                    value: entity.value,
+                    valid: entity.valid
+                  });
+                }}
+                require
+                virgin
+              />
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <IconButton 
+                color="primary" 
+                sx={{ p: '10px' }} 
+                title={t('bank.joinTitle')}
+                disabled={!passkey_label.valid}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addPasskey()
                 }}
               >
-                <Input
-                  label={<Trans>profile.passkey_label</Trans>}
-                  tooltip={<Trans>REGEX.PASSKEY_LABEL</Trans>}
-                  regex={REGEX.PASSKEY_LABEL}
-                  entity={passkey_label}
-                  onChange={(entity:any) => { 
-                    setPasskey_label({
-                      value: entity.value,
-                      valid: entity.valid
-                    });
-                  }}
-                  require
-                  virgin
-                />
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton 
-                  color="primary" 
-                  sx={{ p: '10px' }} 
-                  title={t('bank.joinTitle')}
-                  disabled={!passkey_label.valid}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    addPasskey()
-                  }}
-                >
-                  <Add />
-                </IconButton>
-              </Paper>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Link href="ms-settings:savedpasskeys"><Trans>profile.keys</Trans></Link>
-            </Grid>
-          </div>
-          <div>
-            {contentPasskeys}
-          </div>
+                <Add />
+              </IconButton>
+            </Paper>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Link href="ms-settings:savedpasskeys"><Trans>profile.keys</Trans></Link>
+          </Grid>
+        </div>
+        <div>
+          {contentPasskeys}
         </div>
       </div>
       <Footer />
