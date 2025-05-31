@@ -1,37 +1,67 @@
+// src\component\store\contextStore.tsx
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 
-export interface ContextStoreModel {
-  id: string
-  code: string
-  access_token: string
-  name_first: string
-  name_last: string
+export interface ContextState {
+  access_token: string | null;
+  id: string | null;
+  name_first: string | null;
+  name_last: string | null;
   chests_secret: {
-    id: string;
-    secret: string;
-  }[]
-  reset: () => void
+    id: string
+    secret: string
+  }[];
+  code: string | null;
+  hydrated: boolean;
+  hydrate: () => Promise<void>;
 }
 
-const initialState:any = {
-  id: null,
-  code: null,
+export const contextStore = create<ContextState>()((set) => ({
   access_token: null,
+  id: null,
   name_first: null,
   name_last: null,
-  chests_secret: null,
-}
+  code: null,
+  hydrated: false,
+  chests_secret: [],
 
-const contextPersist = persist<ContextStoreModel>(
-  (set) => ({
-    ...initialState,
-    reset: () => set(initialState)
-  }),
-  {
-      name: "siguri-storage",
-      storage: createJSONStorage(() => localStorage),
-  }
-);
+  hydrate: async () => {
+    try {
+      chrome.cookies.get(
+        {
+          url: 'https://siguri.happykiller.net',
+          name: 'siguri-storage',
+        },
+        (cookie) => {
+          if (cookie?.value) {
+            try {
+              const decoded = decodeURIComponent(cookie.value);
+              const parsed = JSON.parse(decoded);
 
-export const contextStore = create<ContextStoreModel>()(contextPersist);
+              console.log('[contextStore] Cookie decoded:', parsed);
+
+              const state = parsed.state ?? {};
+
+              set({
+                access_token: state.access_token ?? null,
+                id: state.id ?? null,
+                code: state.code ?? null,
+                name_first: state.name_first ?? null,
+                name_last: state.name_last ?? null,
+                chests_secret: state.chests_secret ?? [],
+                hydrated: true,
+              });
+            } catch (err) {
+              console.error('[contextStore] Failed to parse cookie JSON:', err);
+            set({ hydrated: true });
+            }
+          } else {
+            console.warn('[contextStore] access_token cookie not found');
+            set({ hydrated: true });
+          }
+        }
+      );
+    } catch (err) {
+      console.error('[contextStore] hydrate() failed', err);
+    }
+  },
+}));

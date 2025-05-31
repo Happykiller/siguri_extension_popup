@@ -1,5 +1,6 @@
+// src\component\chest.tsx
 import * as React from 'react';
-import { authenticator  } from 'otplib';
+import { authenticator } from 'otplib';
 import { Key } from '@mui/icons-material';
 import NotesIcon from '@mui/icons-material/Notes';
 import KeyOffIcon from '@mui/icons-material/KeyOff';
@@ -14,29 +15,24 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 
-import '@component/chest.scss';
-import '@component/common.scss';
-import Bar from '@component/molecule/bar';
 import { CODES } from '@src/common/codes';
 import { REGEX } from '@src/common/REGEX';
 import inversify from '@src/common/inversify';
-import { Input } from '@component/molecule/input';
-import { Footer } from '@component/molecule/footer';
 import { THING_TYPES } from '@src/common/thingTypes';
-import { FlashStore, flashStore} from '@component/molecule/flash';
+import { useFlashStore, Input } from '@happykiller/sunny-ui';
 import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';
 import { RouterStoreModel, routerStore } from '@component/store/routerStore';
-import { ContextStoreModel, contextStore } from '@component/store/contextStore';
+import { contextStore } from '@component/store/contextStore';
 import { GetThingsUsecaseModel } from '@usecase/getThings/getThings.usecase.model';
 
 export const Chest = () => {
+  const flash = useFlashStore();
   const { t } = useTranslation();
-  const flash:FlashStore = flashStore();
-  const routeur:RouterStoreModel = routerStore();
-  const context:ContextStoreModel = contextStore();
+  const routeur: RouterStoreModel = routerStore();
+  const context:any = contextStore();
   const [time, setTime] = React.useState(new Date());
-  const [things, setThings] = React.useState<ThingUsecaseModel[]>(null);
-  const se = context.chests_secret?.find((elt) => elt.id === routeur.data.chest_id)?.secret ?? '';
+  const [things, setThings] = React.useState<ThingUsecaseModel[]|null>(null);
+  const se = context.chests_secret?.find((elt:any) => elt.id === routeur.data.chest_id)?.secret ?? '';
   const [secretForm, setSecretForm] = React.useState({
     value: se,
     valid: false
@@ -58,7 +54,7 @@ export const Chest = () => {
 
   const handleSetSecret = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    if(!context.chests_secret) {
+    if (!context.chests_secret) {
       context.chests_secret = [{
         id: routeur.data.chest_id,
         secret: secretForm.value
@@ -69,24 +65,24 @@ export const Chest = () => {
         secret: secretForm.value
       });
     }
-    contextStore.setState({ 
+    contextStore.setState({
       chests_secret: context.chests_secret
     });
   }
 
   const keyOff = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    const index = context.chests_secret.findIndex((elt) => elt.id === routeur.data.chest_id);
+    const index = context.chests_secret.findIndex((elt:any) => elt.id === routeur.data.chest_id);
     if (index > -1) {
       context.chests_secret.splice(index, 1);
     }
-    contextStore.setState({ 
+    contextStore.setState({
       chests_secret: context.chests_secret
     });
     routeur.navigateTo('/');
   }
 
-  const copy = (dto: { value: string, type: string}) => {
+  const copy = (dto: { value: string, type: string }) => {
     navigator.clipboard.writeText(dto.value);
     flash.open(t(`chest.copy.${dto.type}`));
   }
@@ -94,7 +90,7 @@ export const Chest = () => {
   const TokenTotp = (props: { secret: string }) => {
     const { secret } = props;
     const token = authenticator.generate(secret);
-    const left = (time.getSeconds() > 30)?60-time.getSeconds():30-time.getSeconds();
+    const left = (time.getSeconds() > 30) ? 60 - time.getSeconds() : 30 - time.getSeconds();
     return (
       <>
         <Typography noWrap>{token}</Typography>
@@ -119,18 +115,18 @@ export const Chest = () => {
   const RowChild = (props: { thing: ThingUsecaseModel }) => {
     const { thing } = props;
 
-    if (thing.type === 'CREDENTIAL') {
+    if (thing.type === 'CREDENTIAL' && thing.credential && thing.credential.address) {
       return (
-        <Grid 
+        <Grid
           container
         >
-          <Grid 
+          <Grid
             xs={6}
             item
             display={(thing.credential.id) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.credential.id`)+thing.credential.id}
+            title={t(`chest.credential.id`) + thing.credential.id}
           >
             <Typography noWrap>{thing.credential.id}</Typography>
             <IconButton
@@ -139,7 +135,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.credential.id,
+                  value: thing.credential?.id??'empty',
                   type: 'credential.id'
                 })
               }}
@@ -148,13 +144,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={6}
             item
             display={(thing.credential.password) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.credential.password`)+thing.credential.password}
+            title={t(`chest.credential.password`) + thing.credential.password}
           >
             <Typography noWrap>{thing.credential.password}</Typography>
             <IconButton
@@ -163,7 +159,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.credential.password,
+                  value: thing.credential?.password??'empty',
                   type: 'credential.password'
                 })
               }}
@@ -172,13 +168,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={12}
             item
             display={(thing.credential.address) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.credential.address`)+thing.credential.address}
+            title={t(`chest.credential.address`) + thing.credential.address}
           >
             <Typography noWrap>{thing.credential.address}</Typography>
             <IconButton
@@ -187,7 +183,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.credential.address,
+                  value: thing.credential?.address??'empty',
                   type: 'credential.address'
                 })
               }}
@@ -199,7 +195,7 @@ export const Chest = () => {
               size="small"
               onClick={(e) => {
                 e.preventDefault();
-                window.open(thing.credential.address, '_blank').focus();
+                window.open(thing.credential?.address, '_blank')?.focus();
               }}
             >
               <OpenInNewIcon />
@@ -208,18 +204,18 @@ export const Chest = () => {
 
         </Grid>
       )
-    } else if (thing.type === 'CB') {
+    } else if (thing.type === 'CB' && thing.cb) {
       return (
-        <Grid 
+        <Grid
           container
         >
-          <Grid 
+          <Grid
             xs={6}
             item
             display={(thing.cb.number) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.cb.number`)+thing.cb.number}
+            title={t(`chest.cb.number`) + thing.cb.number}
           >
             <Typography noWrap>{thing.cb.number}</Typography>
             <IconButton
@@ -228,7 +224,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.cb.number,
+                  value: thing.cb?.number??'empty',
                   type: 'cb.number'
                 })
               }}
@@ -237,13 +233,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={3}
             item
             display={(thing.cb.expiration_date) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.cb.expiration_date`)+thing.cb.expiration_date}
+            title={t(`chest.cb.expiration_date`) + thing.cb.expiration_date}
           >
             <Typography noWrap>{thing.cb.expiration_date}</Typography>
             <IconButton
@@ -252,7 +248,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.cb.expiration_date,
+                  value: thing.cb?.expiration_date??'empty',
                   type: 'cb.expiration_date'
                 })
               }}
@@ -261,13 +257,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={3}
             item
             display={(thing.cb.crypto) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.cb.crypto`)+thing.cb.crypto}
+            title={t(`chest.cb.crypto`) + thing.cb.crypto}
           >
             <Typography noWrap>{thing.cb.crypto}</Typography>
             <IconButton
@@ -276,7 +272,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.cb.crypto,
+                  value: thing.cb?.crypto??'empty',
                   type: 'cb.crypto'
                 })
               }}
@@ -285,13 +281,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={9}
             item
             display={(thing.cb.label) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.cb.label`)+thing.cb.label}
+            title={t(`chest.cb.label`) + thing.cb.label}
           >
             <Typography noWrap>{thing.cb.label}</Typography>
             <IconButton
@@ -300,7 +296,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.cb.label,
+                  value: thing.cb?.label??'empty',
                   type: 'cb.label'
                 })
               }}
@@ -309,13 +305,13 @@ export const Chest = () => {
             </IconButton>
           </Grid>
 
-          <Grid 
+          <Grid
             xs={3}
             item
             display={(thing.cb.code) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.cb.code`)+thing.cb.code}
+            title={t(`chest.cb.code`) + thing.cb.code}
           >
             <Typography noWrap>{thing.cb.code}</Typography>
             <IconButton
@@ -324,7 +320,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.cb.code,
+                  value: thing.cb?.code??'empty',
                   type: 'cb.code'
                 })
               }}
@@ -335,18 +331,18 @@ export const Chest = () => {
 
         </Grid>
       )
-    } else if (thing.type === 'CODE') {
+    } else if (thing.type === 'CODE' && thing.code) {
       return (
-        <Grid 
+        <Grid
           container
         >
-          <Grid 
+          <Grid
             xs={12}
             item
             display={(thing.code.code) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.code.code`)+thing.code.code}
+            title={t(`chest.code.code`) + thing.code.code}
           >
             <Typography noWrap>{thing.code.code}</Typography>
             <IconButton
@@ -355,7 +351,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.code.code,
+                  value: thing.code?.code??'empty',
                   type: 'code.code'
                 })
               }}
@@ -365,18 +361,18 @@ export const Chest = () => {
           </Grid>
         </Grid>
       )
-    } else if (thing.type === THING_TYPES.TOTP) {
+    } else if (thing.type === THING_TYPES.TOTP && thing.totp) {
       return (
-        <Grid 
+        <Grid
           container
         >
-          <Grid 
+          <Grid
             xs={6}
             item
             display={(thing.totp.secret) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.totp.secret`)+thing.totp.secret}
+            title={t(`chest.totp.secret`) + thing.totp.secret}
           >
             <Typography noWrap>{thing.totp.secret}</Typography>
             <IconButton
@@ -385,7 +381,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.totp.secret,
+                  value: thing.totp?.secret??'empty',
                   type: 'totp.secret'
                 })
               }}
@@ -393,7 +389,7 @@ export const Chest = () => {
               <ContentCopyIcon />
             </IconButton>
           </Grid>
-          <Grid 
+          <Grid
             xs={6}
             item
             display={(thing.totp.secret) ? "flex" : "none"}
@@ -407,20 +403,20 @@ export const Chest = () => {
           </Grid>
         </Grid>
       )
-    } else if (thing.type === 'NOTE') {
+    } else if (thing.type === 'NOTE' && thing.note) {
       return (
-        <Grid 
+        <Grid
           container
         >
-          <Grid 
+          <Grid
             xs={12}
             item
             display={(thing.note.note) ? "flex" : "none"}
             justifyContent="center"
             alignItems="center"
-            title={t(`chest.note.note`)+thing.note.note}
+            title={t(`chest.note.note`) + thing.note.note}
           >
-            <Typography 
+            <Typography
               sx={{
                 'white-space': 'pre-wrap'
               }}
@@ -431,7 +427,7 @@ export const Chest = () => {
               onClick={(e) => {
                 e.preventDefault();
                 copy({
-                  value: thing.note.note,
+                  value: thing.note?.note??'empty',
                   type: 'note.note'
                 })
               }}
@@ -456,13 +452,13 @@ export const Chest = () => {
         container
         sx={{
           backgroundColor: '#3C4042',
-          marginBottom:'1px',
+          marginBottom: '1px',
           "&:hover": {
             backgroundColor: "#606368"
           }
         }}
       >
-        <Grid 
+        <Grid
           xs={5}
           item
           display="flex"
@@ -470,15 +466,15 @@ export const Chest = () => {
           alignItems="center"
           title={thing.label}
         >
-          {(thing.type === THING_TYPES.CB)?<Tooltip title='Carte de payement' ><CreditCardIcon/></Tooltip>:''}
-          {(thing.type === THING_TYPES.CODE)?<KeyboardIcon />:''}
-          {(thing.type === THING_TYPES.NOTE)?<NotesIcon />:''}
-          {(thing.type === THING_TYPES.CREDENTIAL)?<PasswordIcon />:''}
-          {(thing.type === THING_TYPES.TOTP)?<HourglassTopIcon />:''}
+          {(thing.type === THING_TYPES.CB) ? <Tooltip title='Carte de payement' ><CreditCardIcon /></Tooltip> : ''}
+          {(thing.type === THING_TYPES.CODE) ? <KeyboardIcon /> : ''}
+          {(thing.type === THING_TYPES.NOTE) ? <NotesIcon /> : ''}
+          {(thing.type === THING_TYPES.CREDENTIAL) ? <PasswordIcon /> : ''}
+          {(thing.type === THING_TYPES.TOTP) ? <HourglassTopIcon /> : ''}
           &nbsp;
           <Typography noWrap>{thing.label}</Typography>
         </Grid>
-        <Grid 
+        <Grid
           xs={6}
           item
           display="flex"
@@ -488,7 +484,7 @@ export const Chest = () => {
         >
           <Typography noWrap>{thing.description}</Typography>
         </Grid>
-        <Grid 
+        <Grid
           xs={1}
           item
           display="flex"
@@ -500,19 +496,19 @@ export const Chest = () => {
             onClick={(e) => {
               e.preventDefault();
               if (routeur.data?.thing_id === thing.id) {
-                routerStore.setState({ 
+                routerStore.setState({
                   route: routeur.route,
                   data: {
-                    ... routeur.data,
+                    ...routeur.data,
                     thing_id: null
                   }
                 });
               } else {
-                routerStore.setState({ 
+                routerStore.setState({
                   route: routeur.route,
                   data: {
-                    ... routeur.data,
-                    thing_id: thing.id 
+                    ...routeur.data,
+                    thing_id: thing.id
                   }
                 });
               }
@@ -521,7 +517,7 @@ export const Chest = () => {
             {(routeur.data?.thing_id === thing.id) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </Grid>
-        <Grid 
+        <Grid
           xs={12}
           item
           display={(routeur.data?.thing_id !== thing.id) ? "none" : "flex"}
@@ -534,66 +530,66 @@ export const Chest = () => {
 
   let content = <div></div>;
 
-  if(qry.loading) {
+  if (qry.loading) {
     content = <div><Trans>common.loading</Trans></div>;
   } else if (!se) {
     content = <form
-      onSubmit = {handleSetSecret}
-    ><Grid 
+      onSubmit={handleSetSecret}
+    ><Grid
       container
       rowSpacing={1}
       columnSpacing={{ xs: 1, sm: 2, md: 3 }}
     >
-      {/* Field secret */}
-      <Grid 
-        xs={12}
-        item
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Input
-          label={<Trans>chest.secret</Trans>}
-          tooltip={<Trans>REGEX.CHEST_KEY</Trans>}
-          regex={REGEX.CHEST_KEY}
-          type="password"
-          entity={secretForm}
-          onChange={(entity:any) => { 
-            setSecretForm({
-              value: entity.value,
-              valid: entity.valid
-            });
-          }}
-          require
-          virgin
-        />
-      </Grid>
+        {/* Field secret */}
+        <Grid
+          xs={12}
+          item
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Input
+            label={<Trans>chest.secret</Trans>}
+            tooltip={<Trans>REGEX.CHEST_KEY</Trans>}
+            regex={REGEX.CHEST_KEY}
+            type="password"
+            entity={secretForm}
+            onChange={(entity: any) => {
+              setSecretForm({
+                value: entity.value,
+                valid: entity.valid
+              });
+            }}
+            require
+            virgin
+          />
+        </Grid>
 
-      {/* Button submit */}
-      <Grid 
-        xs={12}
-        item
-        textAlign='center'
-      >
-        <Button 
-          sx={{
-            m: 1,
-          }}
-          type="submit"
-          variant="contained"
-          size="small"
-          startIcon={<Key />}
-          disabled={!secretForm.valid}
-        ><Trans>chest.submit</Trans></Button>
-      </Grid>
+        {/* Button submit */}
+        <Grid
+          xs={12}
+          item
+          textAlign='center'
+        >
+          <Button
+            sx={{
+              m: 1,
+            }}
+            type="submit"
+            variant="contained"
+            size="small"
+            startIcon={<Key />}
+            disabled={!secretForm.valid}
+          ><Trans>chest.submit</Trans></Button>
+        </Grid>
 
-    </Grid></form>;
-  } else if(qry.error) {
-    content = <Grid 
+      </Grid></form>;
+  } else if (qry.error) {
+    content = <Grid
       container
       rowSpacing={1}
     >
-      <Grid 
+      <Grid
         container
         direction="row"
         display="flex"
@@ -602,14 +598,14 @@ export const Chest = () => {
       >
         <Trans>chest.{qry.error}</Trans>
       </Grid>
-      <Grid 
+      <Grid
         container
-        direction="row" 
+        direction="row"
         display="flex"
         justifyContent="center"
         alignItems="center"
       >
-        <Button 
+        <Button
           sx={{
             m: 1
           }}
@@ -622,119 +618,115 @@ export const Chest = () => {
       </Grid>
     </Grid>
   } else if (!things) {
-      setQry(qry => ({
-        ...qry,
-        loading: true
-      }));
-      inversify.getThingsUsecase.execute({
-        chest_id: routeur.data.chest_id,
-        chest_secret: se
+    setQry(qry => ({
+      ...qry,
+      loading: true
+    }));
+    inversify.getThingsUsecase.execute({
+      chest_id: routeur.data.chest_id,
+      chest_secret: se
+    })
+      .then((response: GetThingsUsecaseModel) => {
+        if (response.message === CODES.SUCCESS && response.data) {
+          setThings(response.data);
+        } else {
+          inversify.loggerService.debug(response.error);
+          setQry((qry:any) => ({
+            ...qry,
+            error: response.message
+          }));
+        }
       })
-        .then((response:GetThingsUsecaseModel) => {
-          if(response.message === CODES.SUCCESS) {
-            setThings(response.data);
-          } else {
-            inversify.loggerService.debug(response.error);
-            setQry(qry => ({
-              ...qry,
-              error: response.message
-            }));
-          }
-        })
-        .catch((error:any) => {
-          setQry(qry => ({
-            ...qry,
-            error: error.message
-          }));
-        })
-        .finally(() => {
-          setQry(qry => ({
-            ...qry,
-            loading: false
-          }));
-        });
+      .catch((error: any) => {
+        setQry(qry => ({
+          ...qry,
+          error: error.message
+        }));
+      })
+      .finally(() => {
+        setQry(qry => ({
+          ...qry,
+          loading: false
+        }));
+      });
   } else {
-      content = <Grid 
+    content = <Grid
+      container
+      sx={{
+        minWidth: "350px"
+      }}
+    >
+      <Grid
         container
-        sx={{
-          minWidth: "350px"
-        }}
+        direction="row"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
       >
-        <Grid 
-          container
-          direction="row" 
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Button 
-            sx={{
-              m: 1
-            }}
-            variant="contained"
-            size="small"
-            color='warning'
-            startIcon={<KeyOffIcon />}
-            onClick={keyOff}
-          ><Trans>chest.keyoff</Trans></Button>
-        </Grid>
+        <Button
+          sx={{
+            m: 1
+          }}
+          variant="contained"
+          size="small"
+          color='warning'
+          startIcon={<KeyOffIcon />}
+          onClick={keyOff}
+        ><Trans>chest.keyoff</Trans></Button>
+      </Grid>
 
-        {/* Table */}
+      {/* Table */}
+      <Grid
+        container
+      >
         <Grid
           container
+          sx={{
+            color: "#000000",
+            fontWeight: "bold",
+            backgroundColor: "#EA80FC",
+            borderRadius: "5px 5px 0px 0px",
+            fontSize: "0.875rem"
+          }}
         >
           <Grid
-            container
-            sx={{
-              color: "#000000",
-              fontWeight: "bold",
-              backgroundColor: "#EA80FC",
-              borderRadius: "5px 5px 0px 0px",
-              fontSize: "0.875rem"
-            }}
+            xs={5}
+            item
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
           >
-            <Grid 
-              xs={5}
-              item
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Trans>home.label</Trans>
-            </Grid>
-            <Grid 
-              xs={6}
-              item
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Trans>home.description</Trans>
-            </Grid>
-            <Grid
-              xs={1}
-              item>
-            </Grid>
+            <Trans>home.label</Trans>
           </Grid>
-
-          {things?.map((thing) => (
-            <Row key={thing.id} thing={thing} />
-          ))}
-
+          <Grid
+            xs={6}
+            item
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Trans>home.description</Trans>
+          </Grid>
+          <Grid
+            xs={1}
+            item>
+          </Grid>
         </Grid>
-      </Grid>;
+
+        {things?.map((thing) => (
+          <Row key={thing.id} thing={thing} />
+        ))}
+
+      </Grid>
+    </Grid>;
   }
 
   return (
-    <div>
-      <Bar/>
-      <div className="app">
-        <div className='chestLabel'>
-          {routeur.data.chest_label}
-        </div>
-        {content}
+    <div className="app">
+      <div className='chestLabel'>
+        {routeur.data.chest_label}
       </div>
-      <Footer />
+      {content}
     </div>
   )
 };

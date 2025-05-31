@@ -1,15 +1,15 @@
 const path = require("path")
 const { DefinePlugin, ProvidePlugin } = require('webpack')
-const HtmlWebpackPlugin = require("html-webpack-plugin") 
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 const dotenv = require('dotenv').config().parsed;
 const dotenvlocal = require('dotenv').config({
   path: '.env.local'
- , override: true 
+  , override: true
 }).parsed;
 const config = Object.assign({}, dotenv, dotenvlocal);
- 
-module.exports = { 
+
+module.exports = {
   entry: "./src/index.tsx",
   performance: {
     hints: false,
@@ -23,7 +23,7 @@ module.exports = {
     historyApiFallback: true,
   },
   devtool: "source-map",
-  resolve: { 
+  resolve: {
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       os: require.resolve('os-browserify/browser'),
@@ -34,26 +34,29 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".json", '.scss', '.svg'],
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
-      '@component': path.resolve(__dirname, 'src/component/'),
       '@usecase': path.resolve(__dirname, 'src/usecase/'),
       '@service': path.resolve(__dirname, 'src/service/'),
+      '@services': path.resolve(__dirname, 'src/services/'),
+      '@component': path.resolve(__dirname, 'src/component/'),
+      '@vues': path.resolve(__dirname, 'src/components/vues/'),
+      '@components': path.resolve(__dirname, 'src/components/'),
     }
-  }, 
-  output: { 
-    path: path.join(__dirname, "/dist"), 
+  },
+  output: {
+    path: path.join(__dirname, "/dist"),
     filename: "index_bundle.js",
     publicPath: '/'
-  }, 
-  module: { 
+  },
+  module: {
     rules: [
       {
         test: /\.svg$/i,
         issuer: /\.[jt]sx?$/,
         use: ['@svgr/webpack'],
       },
-      {  
-        test: /\.tsx?$/,  
-        loader: "ts-loader" 
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader"
       },
       {
         test: /\.s[ac]ss$/i,
@@ -76,8 +79,11 @@ module.exports = {
       'process.env': JSON.stringify(config)
     }),
     new ProvidePlugin({
-      process: 'process/browser',
+      process: require.resolve('process/browser.js'), // 👈 extension explicite
       Buffer: ['buffer', 'Buffer'],
     }),
-  ]
+  ],
+  optimization: {
+    concatenateModules: false
+  }
 }

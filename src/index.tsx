@@ -1,31 +1,37 @@
-import * as React from 'react';
+// src\index.tsx
+import React from 'react';
 import { CssBaseline } from '@mui/material';
 import { createRoot } from 'react-dom/client';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 
-import '@src/i18n';
-import '@src/index.scss';
-import Flash from '@component/molecule/flash';
+import initI18n from '@src/i18n';
+import { getTheme } from '@src/theme';
 import { Router } from '@component/molecule/router';
+import { contextStore } from './component/store/contextStore';
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+const AppWrapper = () => {
+  const hydrated = contextStore((s) => s.hydrated);
 
-root.render(
-  <React.StrictMode>
-    <div className='index'>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <Router />
-        <Flash/>
-      </ThemeProvider>
-    </div>
-  </React.StrictMode>
-);
+  if (!hydrated) return <div>Loading...</div>;
+
+  return (
+    <ThemeProvider theme={getTheme('dark')}>
+      <CssBaseline />
+      <Router />
+    </ThemeProvider>
+  );
+};
+
+contextStore.getState().hydrate().then(() => {
+  initI18n().then(() => {
+    root.render(
+      <React.StrictMode>
+        <AppWrapper />
+      </React.StrictMode>
+    );
+  });
+});

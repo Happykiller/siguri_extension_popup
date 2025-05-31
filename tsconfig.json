@@ -1,23 +1,33 @@
 {
   "compilerOptions": {
     "types": ["chrome", "node"],
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "module": "commonjs",
-    "allowJs": true,
-    "target": "ES2021",
-    "jsx": "react",
-    "baseUrl": "./",
+    "target": "es6",                             // Use modern JavaScript features
+    "module": "esnext",                          // Enable tree-shaking for Webpack
+    "lib": ["dom", "esnext"],                    // Include DOM and latest JavaScript features
+    "strict": true,                              // Enable all strict type-checking options
+    "jsx": "react-jsx",                          // Use the new JSX transform (React 17+)
+    "moduleResolution": "node",                  // Resolve modules like Node.js
+    "esModuleInterop": true,                     // Enable interoperability between CommonJS and ES Modules
+    "skipLibCheck": false,                       // Enable strict type checking for libraries
+    "forceConsistentCasingInFileNames": true,    // Ensure consistent casing in file names
+    "outDir": "./dist",                          // Output directory for compiled files
+    "baseUrl": "./",                             // Base directory for resolving non-relative module names
     "paths": {
       "@src/*": ["src/*"],
-      "@component/*": ["src/component/*"],
       "@usecase/*": ["src/usecase/*"],
-      "@service/*": ["src/service/*"]
+      "@service/*": ["src/service/*"],
+      "@services/*": ["src/services/*"],
+      "@component/*": ["src/component/*"],
+      "@vues/*": ["src/components/vues/*"],
+      "@components/*": ["src/components/*"],
     },
-    "resolveJsonModule": true
+    "sourceMap": true,                           // Generate source maps for debugging
+    "declaration": true,                         // Generate declaration files (.d.ts)
+    "resolveJsonModule": true,                   // Allow importing JSON files as modules
+    "allowSyntheticDefaultImports": true,       // Allow default imports from modules with no default export
+    "useDefineForClassFields": true,             // Ensure class fields follow modern spec
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": [
-    "./src/**/*"
-  ]
+  "include": ["src"],                            // Include source files for compilation
+  "exclude": ["node_modules", "dist"]            // Exclude directories
 }
