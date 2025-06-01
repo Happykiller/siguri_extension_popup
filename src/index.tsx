@@ -1,4 +1,10 @@
 // src\index.tsx
+/// <reference path="./theme/mui.d.ts" />
+import '@fontsource/roboto';
+import '@fontsource/montserrat';
+import '@fontsource/roboto/400.css';
+import '@fontsource/montserrat/600.css';
+
 import React from 'react';
 import { CssBaseline } from '@mui/material';
 import { createRoot } from 'react-dom/client';
@@ -6,8 +12,8 @@ import { ThemeProvider } from '@mui/material/styles';
 
 import initI18n from '@src/i18n';
 import { getTheme } from '@src/theme';
-import { Router } from '@component/molecule/router';
-import { contextStore } from './component/store/contextStore';
+import { contextStore } from '@stores/contextStore';
+import { Router } from '@components/molecules/Router';
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement

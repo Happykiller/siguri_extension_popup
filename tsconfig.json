@@ -14,10 +14,9 @@
     "baseUrl": "./",                             // Base directory for resolving non-relative module names
     "paths": {
       "@src/*": ["src/*"],
+      "@stores/*": ["src/stores/*"],
       "@usecase/*": ["src/usecase/*"],
-      "@service/*": ["src/service/*"],
       "@services/*": ["src/services/*"],
-      "@component/*": ["src/component/*"],
       "@vues/*": ["src/components/vues/*"],
       "@components/*": ["src/components/*"],
     },

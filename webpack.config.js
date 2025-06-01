@@ -1,6 +1,11 @@
-const path = require("path")
-const { DefinePlugin, ProvidePlugin } = require('webpack')
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+// webpack.config.js
+const path = require("path");
+const WebpackBar = require('webpackbar');
+const { version } = require('./package.json');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { DefinePlugin, ProvidePlugin } = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const dotenv = require('dotenv').config().parsed;
 const dotenvlocal = require('dotenv').config({
@@ -8,6 +13,7 @@ const dotenvlocal = require('dotenv').config({
   , override: true
 }).parsed;
 const config = Object.assign({}, dotenv, dotenvlocal);
+config.VERSION = version;
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -31,13 +37,12 @@ module.exports = {
       stream: require.resolve('stream-browserify'),
       vm: require.resolve("vm-browserify"),
     },
-    extensions: [".ts", ".tsx", ".js", ".json", '.scss', '.svg'],
+    extensions: ['.tsx', '.ts', '.js', '.json', '.scss', '.svg', '.woff', '.woff2', '.ttf', '.eot'],
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
+      '@stores': path.resolve(__dirname, 'src/stores/'),
       '@usecase': path.resolve(__dirname, 'src/usecase/'),
-      '@service': path.resolve(__dirname, 'src/service/'),
       '@services': path.resolve(__dirname, 'src/services/'),
-      '@component': path.resolve(__dirname, 'src/component/'),
       '@vues': path.resolve(__dirname, 'src/components/vues/'),
       '@components': path.resolve(__dirname, 'src/components/'),
     }
@@ -45,7 +50,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "/dist"),
     filename: "index_bundle.js",
-    publicPath: '/'
+    publicPath: 'auto'
   },
   module: {
     rules: [
@@ -56,22 +61,32 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'tsx',
+          target: 'es2017'
+        }
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.(s[ac]ss|css)$/i,
         use: [
-          // Creates `style` nodes from JS strings
-          "style-loader",
-          // Translates CSS into CommonJS
+          MiniCssExtractPlugin.loader,
           "css-loader",
-          // Compiles Sass to CSS
           "sass-loader",
         ],
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot)$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]',
+        },
       }
     ]
   },
   plugins: [
+    new WebpackBar(),
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({      // Instancie le plugin
       template: "./public/index.html"  // Spécifie notre template
     }),
@@ -79,11 +94,17 @@ module.exports = {
       'process.env': JSON.stringify(config)
     }),
     new ProvidePlugin({
-      process: require.resolve('process/browser.js'), // 👈 extension explicite
+      process: require.resolve('process/browser.js'),
       Buffer: ['buffer', 'Buffer'],
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+    })
   ],
   optimization: {
-    concatenateModules: false
-  }
+    concatenateModules: false,
+  },
+  cache: {
+    type: 'filesystem',
+  },
 }

@@ -1,5 +1,7 @@
-// src\component\store\contextStore.tsx
+// src\stores\contextStore.tsx
 import { create } from 'zustand';
+
+import config from '@src/common/config';
 
 export interface ContextState {
   access_token: string | null;
@@ -28,16 +30,14 @@ export const contextStore = create<ContextState>()((set) => ({
     try {
       chrome.cookies.get(
         {
-          url: 'https://siguri.happykiller.net',
-          name: 'siguri-storage',
+          url: config.siguri_url,
+          name: config.local_storage_name,
         },
         (cookie) => {
           if (cookie?.value) {
             try {
               const decoded = decodeURIComponent(cookie.value);
               const parsed = JSON.parse(decoded);
-
-              console.log('[contextStore] Cookie decoded:', parsed);
 
               const state = parsed.state ?? {};
 
@@ -51,11 +51,9 @@ export const contextStore = create<ContextState>()((set) => ({
                 hydrated: true,
               });
             } catch (err) {
-              console.error('[contextStore] Failed to parse cookie JSON:', err);
             set({ hydrated: true });
             }
           } else {
-            console.warn('[contextStore] access_token cookie not found');
             set({ hydrated: true });
           }
         }

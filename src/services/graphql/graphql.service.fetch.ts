@@ -1,5 +1,5 @@
 // src\services\graphql\graphql.service.fetch.ts
-import { contextStore } from "@src/component/store/contextStore";
+import { contextStore } from "@src/stores/contextStore";
 import config from "@src/common/config";
 import { GraphqlService } from "@happykiller/sunny-ui";
 

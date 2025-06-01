@@ -32,12 +32,9 @@ export class Inversify {
 
     // Services
     this.loggerService = new LoggerServiceReal();
-    console.log(config.mode)
     if (config.mode === 'prod') {
-      console.log('prod')
       this.graphqlService = new GraphqlServiceFetch2(this);
     } else {
-      console.log('other')
       this.graphqlService = new GraphqlServiceFake();
     }
 

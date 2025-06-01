@@ -1,11 +1,11 @@
 {
-  "bar": {
-    "background": "Background",
-    "cb": "CB",
-    "home": "Accueil",
-    "logout": "Sortir",
-    "password": "Passe",
-    "profile": "Profil"
+  "bank": {
+    "description": "Description",
+    "JOIN_CHEST_FAIL": "Impossible de rejoindre",
+    "joined": "Coffre rejoint",
+    "label": "Label",
+    "enter": "Entrer",
+    "empty": "Aucun coffre"
   },
   "chest": {
     "cb": {
@@ -66,27 +66,6 @@
     "create": "Créer",
     "loading": "Chargement..."
   },
-  "footer": {
-    "mail": "Mail",
-    "roadmap": "Roadmap",
-    "issues": "Anomalies",
-    "version": {
-      "ext": "Ext:",
-      "apis": "Apis:"
-    }
-  },
-  "home": {
-    "title": "Accueil",
-    "label": "Label",
-    "description": "Description"
-  },
-  "login": {
-    "title": "Authentification",
-    "login": "Identifiant",
-    "password": "Mot de passe",
-    "AUTH_FAIL_WRONG_CREDENTIAL": "Identifiants incorrects",
-    "passkey": "Clés d'accés"
-  },
   "password": {
     "title": "Mot de passe",
     "length": "Longeur",
@@ -95,49 +74,5 @@
     "generated": "Mot de passe : ",
     "sucess": "Généré avec succès et copié",
     "specials": "Caractères spéciaux"
-  },
-  "profile": {
-    "addPasskey": "Ajouter une clé",
-    "code": "Identifiant: ",
-    "confPassword": "Confirmer mot de passe",
-    "keys": "Voir les clés du système",
-    "name_first": "Prénom: ",
-    "name_last": "Nom: ",
-    "newPassword": "Nouveau mot de passe",
-    "oldPassword": "Mot de passe actuel",
-    "passkey": {
-      "table": {
-        "label": "Nom",
-        "delete": "Supprimer",
-        "active": "Activer"
-      }
-    },
-    "passkeys": "Clés d'accés",
-    "passkey_label": "Nom de l'appareil",
-    "password": "Changer mot de passe",
-    "passwordUpdated": "Mise à jour du mot de passe réussi",
-    "title": "Profil",
-    "UPDATE_PASSWORD_FAIL": "Echec du changement de mot de passe"
-  },
-  "REGEX": {
-    "LOGIN": "De 3 à 50, juste des lettres",
-    "PASSWORD": "De 3 à 50, lettres et chiffres avec possible @$!%*?&",
-    "CHEST_CODE": "Un code alpha-numérique",
-    "CHEST_LABEL": "De 3 à 50, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "CHEST_KEY": "De 3 à 50, lettres y compris avec accent et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "CHEST_DESCRIPTION": "De 3 à 250, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_LABEL": "De 3 à 50, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_DESCRIPTION": "De 3 à 250, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_CODE": "De 3 à 250, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_NOTE": "De 3 à 500, lettres y compris avec accent, chiffres, espace, retour à la ligne avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_TOTP": "De 3 à 50, lettres et des chiffres de 2-7",
-    "THING_LOGIN": "De 1 à 250, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_PASSWORD": "De 1 à 250, lettres y compris avec accent, espace et chiffres avec possibleblement _-'./+@$!%*?&#\"",
-    "THING_ADDRESS": "IP ou URL, de 3 à 250, lettres, chiffres avec possibleblement _-./+@$!%*?&#",
-    "THING_CB_NUMBER": "Des chiffres avec possiblement des espaces",
-    "THING_CB_CODE": "4 chiffres",
-    "THING_CB_CRYPTO": "3 chiffres",
-    "THING_CB_NAME": "De 3 à 50 lettres avec possiblement des espaces",
-    "THING_CB_EXPIRATION_DATE": "Des chiffres avec un espace ou - ou -, exemple 02/24"
   }
 }
