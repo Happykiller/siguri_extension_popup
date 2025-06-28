@@ -70,7 +70,14 @@ export function Footer() {
       }}
     >
       <Typography variant="body2" component="span">
-        Siguri
+        <Link
+          component="button"
+          onClick={() => window.open(config.siguri_url, '_blank')}
+          underline="hover"
+          sx={iconStyle}
+        >
+          Siguri
+        </Link>
       </Typography>
 
       <Tooltip title={<Trans>footer.email</Trans>}>

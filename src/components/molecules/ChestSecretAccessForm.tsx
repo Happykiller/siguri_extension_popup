@@ -8,7 +8,7 @@ import { Visibility, VisibilityOff, Info as InfoIcon } from '@mui/icons-material
 
 import { REGEX } from '@src/common/REGEX';
 import { Input } from '@happykiller/sunny-ui';
-import { contextStore } from '@stores/contextStore';
+import { chestsSecretStore } from '@stores/chestSecretStore';
 
 interface ChestSecretAccessFormProps {
   chestId: string;
@@ -17,6 +17,7 @@ interface ChestSecretAccessFormProps {
 
 export const ChestSecretAccessForm = ({ chestId, onSuccess }: ChestSecretAccessFormProps) => {
   const [secret, setSecret] = useState({ value: '', valid: false });
+  const { addChest } = chestsSecretStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,16 +27,8 @@ export const ChestSecretAccessForm = ({ chestId, onSuccess }: ChestSecretAccessF
       secret: secret.value,
     };
 
-    const current = contextStore.getState().chests_secret ?? [];
-    const index = current.findIndex(c => c.id === chestId);
+    addChest(updated);
 
-    if (index > -1) {
-      current[index] = updated;
-    } else {
-      current.push(updated);
-    }
-
-    contextStore.setState({ chests_secret: current });
     onSuccess(secret.value);
   };
 

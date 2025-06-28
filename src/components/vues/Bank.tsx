@@ -4,17 +4,13 @@ import { Trans, useTranslation } from 'react-i18next';
 import {
   Box,
   Grid2 as Grid,
-  IconButton,
-  Tooltip,
   Typography,
   useTheme,
 } from '@mui/material';
-import { Group } from '@mui/icons-material';
 
 import { CODES } from '@src/common/codes';
 import inversify from '@src/common/inversify';
 import { routerStore } from '@stores/routerStore';
-import { contextStore } from '@stores/contextStore';
 import { useFlashStore } from '@happykiller/sunny-ui';
 import { ChestUsecaseModel } from '@usecase/model/chest.usecase.model';
 import { GetChestsUsecaseModel } from '@usecase/getChests/getChests.usecase.model';
@@ -22,7 +18,6 @@ import { GetChestsUsecaseModel } from '@usecase/getChests/getChests.usecase.mode
 export const Bank = () => {
   const theme = useTheme();
   const flash = useFlashStore();
-  const context = contextStore();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,33 +85,16 @@ export const Bank = () => {
                   chest_label: chest.label
                 })}
               >
-                <Grid size={4}>
+                <Grid size={5}>
                   <Typography noWrap variant="subtitle1" color="text.primary" fontWeight={500}>
                     {chest.label}
                   </Typography>
                 </Grid>
 
-                <Grid size={6}>
+                <Grid size={7}>
                   <Typography noWrap variant="body2" color="text.secondary">
                     {chest.description}
                   </Typography>
-                </Grid>
-
-                <Grid size={2} textAlign="center">
-                  <Box display="flex" justifyContent="center" gap={1}>
-                    {/* Membres */}
-                    {chest.members.filter(m => m.user_id !== context.id).length > 0 && (
-                      <Tooltip title={
-                        <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-                          {chest.members.filter(m => m.user_id !== context.id).map(m => (
-                            <li key={m.user_id}>{m.user.code}</li>
-                          ))}
-                        </ul>
-                      }>
-                        <IconButton size="small"><Group fontSize="inherit" /></IconButton>
-                      </Tooltip>
-                    )}
-                  </Box>
                 </Grid>
               </Grid>
             ))}

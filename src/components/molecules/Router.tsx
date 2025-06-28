@@ -10,12 +10,12 @@ import { Chest } from '@vues/Chest';
 import { CODES } from '@src/common/codes';
 import inversify from '@src/common/inversify';
 import { routerStore } from '@stores/routerStore';
-import { contextStore } from '@stores/contextStore';
+import { cookieStore } from '@src/stores/cookieStore';
 import { LayoutExt } from '@components/layout/LayoutExt';
 
 export const Router: React.FC = () => {
   const routeur = routerStore();
-  const context = contextStore();
+  const cookie = cookieStore();
 
   const [state, setState] = React.useState<{
     loading: boolean;
@@ -30,7 +30,7 @@ export const Router: React.FC = () => {
   });
 
   React.useEffect(() => {
-    const hasToken = Boolean(context.access_token);
+    const hasToken = Boolean(cookie.access_token);
     if (!hasToken) {
       setState({ loading: false, error: null, validated: false });
       return;
@@ -66,7 +66,7 @@ export const Router: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [context.access_token, context.id]);
+  }, [cookie.access_token]);
 
   if (state.loading) {
     return <div><Trans>common.loading</Trans></div>;

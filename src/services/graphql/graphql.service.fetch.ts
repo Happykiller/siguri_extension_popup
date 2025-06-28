@@ -1,17 +1,16 @@
 // src\services\graphql\graphql.service.fetch.ts
-import { contextStore } from "@src/stores/contextStore";
 import config from "@src/common/config";
 import { GraphqlService } from "@happykiller/sunny-ui";
+import { cookieStore } from "@src/stores/cookieStore";
 
-
-export class GraphqlServiceFetch2 implements GraphqlService {
+export class GraphqlServiceFetch implements GraphqlService {
   constructor(
     private inversify: any
   ) {}
 
   async send(datas: any): Promise<any> {
     try {
-      const access_token = contextStore.getState().access_token;
+      const access_token = cookieStore.getState().access_token;
 
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',

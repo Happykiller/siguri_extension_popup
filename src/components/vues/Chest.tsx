@@ -9,24 +9,23 @@ import { ArrowBackIosNew } from '@mui/icons-material';
 
 import { CODES } from '@src/common/codes';
 import inversify from '@src/common/inversify';
-import { contextStore } from '@stores/contextStore';
 import { useFlashStore } from '@happykiller/sunny-ui';
 import { ThingRow } from '@components/molecules/ThingRow';
+import { chestsSecretStore } from '@stores/chestSecretStore';
 import { routerStore, RouterStoreModel } from '@stores/routerStore';
 import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';
 import { GetThingsUsecaseModel } from '@usecase/getThings/getThings.usecase.model';
 import { ChestSecretAccessForm } from '@components/molecules/ChestSecretAccessForm';
 
 export const Chest = () => {
-  const theme = useTheme();
   const flash = useFlashStore();
   const { t } = useTranslation();
-  const context = contextStore();
   const routeur: RouterStoreModel = routerStore();
+  const { openRowId, setOpenRowId } = routerStore();
   const chest_id = routeur.data.chest_id;
   const chest_label = routeur.data.chest_label;
-  const [openRowId, setOpenRowId] = useState<string | null>(null);
-  const secret = context.chests_secret?.find(c => c.id === chest_id)?.secret ?? '';
+  const { chests, addChest, removeChest } = chestsSecretStore();
+  const secret = chests?.find(c => c.id === chest_id)?.secret ?? '';
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,12 +58,7 @@ export const Chest = () => {
   }, [secret]);
 
   const handleSecretSet = (value: string) => {
-    contextStore.setState((prev: any) => ({
-      chests_secret: [
-        ...(prev.chests_secret?.filter((s: any) => s.id !== chest_id) ?? []),
-        { id: chest_id, secret: value }
-      ]
-    }));
+    addChest({ id: chest_id, secret: value });
     fetchThings();
   };
 
@@ -99,10 +93,10 @@ export const Chest = () => {
                 color="warning"
                 startIcon={<KeyOff />}
                 onClick={() => {
-                  context.chests_secret = context.chests_secret?.filter(s => s.id !== chest_id) ?? [];
-                  contextStore.setState({ chests_secret: context.chests_secret });
+                  removeChest(chest_id);
                   routerStore.setState({
-                    route: '/bank'
+                    route: '/bank',
+                    openRowId: null
                   });
                 }}
               >
