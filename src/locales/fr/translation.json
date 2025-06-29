@@ -7,6 +7,12 @@
     "enter": "Entrer",
     "empty": "Aucun coffre"
   },
+  "bank_search": {
+    "search": "Recherche dans les coffres",
+    "no_results": "Pas de resultats",
+    "tooltip": "Recherche dans les coffres",
+    "in_chest": "Dans le coffre: "
+  },
   "chest": {
     "cb": {
       "number": "Numéro: ",

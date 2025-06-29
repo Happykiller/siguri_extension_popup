@@ -3,16 +3,21 @@ import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   Box,
-  Grid2 as Grid,
+  Grid,
   Typography,
   useTheme,
 } from '@mui/material';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 import { CODES } from '@src/common/codes';
 import inversify from '@src/common/inversify';
+import { cookieStore } from '@stores/cookieStore';
 import { routerStore } from '@stores/routerStore';
 import { useFlashStore } from '@happykiller/sunny-ui';
+import { BankSearch } from '@components/molecules/BankSearch';
 import { ChestUsecaseModel } from '@usecase/model/chest.usecase.model';
+import { chestsSecretStore, ChestSecret } from '@stores/chestSecretStore';
 import { GetChestsUsecaseModel } from '@usecase/getChests/getChests.usecase.model';
 
 export const Bank = () => {
@@ -22,6 +27,12 @@ export const Bank = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chests, setChests] = useState<ChestUsecaseModel[]>([]);
+
+  const cookieSecrets = (cookieStore().chests_secret ?? []) as ChestSecret[];
+  const appSecrets = (chestsSecretStore().chests ?? []) as ChestSecret[];
+
+  const hasCookieSecret = (id: string) => (cookieSecrets ?? []).some(c => c.id === id);
+  const hasAppSecret = (id: string) => (appSecrets ?? []).some(c => c.id === id);
 
   useEffect(() => {
     const fetchChests = async () => {
@@ -59,6 +70,10 @@ export const Bank = () => {
           p: 1,
         }}
       >
+        <Box mb={1}>
+          <BankSearch />
+        </Box>
+
         {/* Liste des coffres */}
         {loading ? (
           <Typography><Trans>common.loading</Trans></Typography>
@@ -91,10 +106,19 @@ export const Bank = () => {
                   </Typography>
                 </Grid>
 
-                <Grid size={7}>
+                <Grid size={6}>
                   <Typography noWrap variant="body2" color="text.secondary">
                     {chest.description}
                   </Typography>
+                </Grid>
+
+                <Grid size={1}>
+                  {hasCookieSecret(chest.id) && (
+                    <LockOpenIcon fontSize="small" sx={{ color: theme.palette.primary.main }} />
+                  )}
+                  {hasAppSecret(chest.id) && !hasCookieSecret(chest.id) && (
+                    <VpnKeyIcon fontSize="small" sx={{ color: theme.palette.primary.main }} />
+                  )}
                 </Grid>
               </Grid>
             ))}

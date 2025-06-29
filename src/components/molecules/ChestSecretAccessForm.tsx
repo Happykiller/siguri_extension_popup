@@ -2,8 +2,8 @@
 import { Trans } from 'react-i18next';
 import React, { useState } from 'react';
 import { Key } from '@mui/icons-material';
+import { Button, Grid } from '@mui/material';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import { Button, Grid2 as Grid } from '@mui/material';
 import { Visibility, VisibilityOff, Info as InfoIcon } from '@mui/icons-material';
 
 import { REGEX } from '@src/common/REGEX';

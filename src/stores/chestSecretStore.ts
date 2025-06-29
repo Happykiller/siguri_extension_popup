@@ -1,4 +1,4 @@
-// src/stores/chestsSecretStore.ts
+// src/stores/chestSecretStore.ts
 import { create } from 'zustand';
 
 // Type of the store

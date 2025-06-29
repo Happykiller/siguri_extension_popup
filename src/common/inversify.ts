@@ -5,6 +5,7 @@ import { GetChestUsecase } from '@usecase/getChest/getChest.usecase';
 import { GetChestsUsecase } from '@usecase/getChests/getChests.usecase';
 import { GetThingsUsecase } from '@usecase/getThings/getThings.usecase';
 import { GraphqlServiceFetch } from '@services/graphql/graphql.service.fetch';
+import { SearchThingsUsecase } from '@usecase/searchThings/searchThings.usecase';
 import { GeneratePasswordUsecase } from '@usecase/generatePassword/generatePassword.usecase';
 import { LoggerService, GraphqlService, SystemInfoUsecase, LoggerServiceReal, GraphqlServiceFake, SessionInfoUsecase } from '@happykiller/sunny-ui';
 
@@ -17,6 +18,7 @@ export class Inversify {
   getThingsUsecase: GetThingsUsecase;
   systemInfoUsecase: SystemInfoUsecase;
   sessionInfoUsecase: SessionInfoUsecase;
+  searchThingsUsecase: SearchThingsUsecase;
   generatePasswordUsecase: GeneratePasswordUsecase;
 
   constructor() {
@@ -27,6 +29,7 @@ export class Inversify {
     this.getChestsUsecase = new GetChestsUsecase(this);
     this.systemInfoUsecase = new SystemInfoUsecase(this);
     this.sessionInfoUsecase = new SessionInfoUsecase(this);
+    this.searchThingsUsecase = new SearchThingsUsecase(this);
     this.generatePasswordUsecase = new GeneratePasswordUsecase(this);
 
     // Services

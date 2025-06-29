@@ -12,8 +12,8 @@ import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined';
 import CreditCardOutlined from '@mui/icons-material/CreditCardOutlined';
 import TextFieldsOutlined from '@mui/icons-material/TextFieldsOutlined';
 import StickyNote2Outlined from '@mui/icons-material/StickyNote2Outlined';
+import { Box, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import AlternateEmailOutlined from '@mui/icons-material/AlternateEmailOutlined';
-import { Box, Grid2 as Grid, IconButton, Tooltip, Typography } from '@mui/material';
 
 import { THING_TYPES } from '@src/common/thingTypes';
 import { TokenTotp } from '@components/molecules/TokenTotp';

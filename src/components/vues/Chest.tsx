@@ -1,19 +1,20 @@
-// src/presentation/chest.tsx
+// src\components\vues\Chest.tsx
 import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import {
-  Box, Typography, Button, Grid2 as Grid, useTheme
+  Box, Typography, Button, Grid,
 } from '@mui/material';
 import { KeyOff } from '@mui/icons-material';
 import { ArrowBackIosNew } from '@mui/icons-material';
 
 import { CODES } from '@src/common/codes';
 import inversify from '@src/common/inversify';
+import { cookieStore } from '@stores/cookieStore';
 import { useFlashStore } from '@happykiller/sunny-ui';
 import { ThingRow } from '@components/molecules/ThingRow';
-import { chestsSecretStore } from '@stores/chestSecretStore';
 import { routerStore, RouterStoreModel } from '@stores/routerStore';
 import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';
+import { ChestSecret, chestsSecretStore } from '@stores/chestSecretStore';
 import { GetThingsUsecaseModel } from '@usecase/getThings/getThings.usecase.model';
 import { ChestSecretAccessForm } from '@components/molecules/ChestSecretAccessForm';
 
@@ -24,8 +25,18 @@ export const Chest = () => {
   const { openRowId, setOpenRowId } = routerStore();
   const chest_id = routeur.data.chest_id;
   const chest_label = routeur.data.chest_label;
-  const { chests, addChest, removeChest } = chestsSecretStore();
-  const secret = chests?.find(c => c.id === chest_id)?.secret ?? '';
+  const { addChest, removeChest } = chestsSecretStore();
+
+  const cookieSecrets = (cookieStore().chests_secret ?? []) as ChestSecret[];
+  const appSecrets = chestsSecretStore().chests;
+
+  const cookieSecret = cookieSecrets.find(c => c.id === chest_id);
+  const appSecret = appSecrets.find(c => c.id === chest_id);
+
+  const secret = appSecret?.secret || cookieSecret?.secret || '';
+  const isFromAppStore = !!appSecret;
+
+  const thing_id: string | null = routeur.data?.thing_id ?? null;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +65,13 @@ export const Chest = () => {
   };
 
   useEffect(() => {
-    if (secret) fetchThings();
+    if (secret) {
+      fetchThings().then(() => {
+        if (thing_id) {
+          setOpenRowId(thing_id);
+        }
+      });
+    }
   }, [secret]);
 
   const handleSecretSet = (value: string) => {
@@ -79,14 +96,13 @@ export const Chest = () => {
               startIcon={<ArrowBackIosNew />}
               sx={{ mr: 1, minWidth: 0, padding: '6px' }}
             >
-              {/* Icône seule, pas besoin de texte */}
             </Button>
             <Typography color="primary.light" variant="h5" fontWeight={700}>
               {chest_label}
             </Typography>
           </Grid>
 
-          {secret && (
+          {secret && isFromAppStore && (
             <Grid>
               <Button
                 size="small"

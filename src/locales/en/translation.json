@@ -1,5 +1,84 @@
 {
-  "app": {
-    "welcome": "Welcome :)"
+  "bank": {
+    "description": "Description",
+    "JOIN_CHEST_FAIL": "Unable to join",
+    "joined": "Chest joined",
+    "label": "Label",
+    "enter": "Enter",
+    "empty": "No chest"
+  },
+  "bank_search": {
+    "search": "Search in chests",
+    "no_results": "No results",
+    "tooltip": "Search within chests",
+    "in_chest": "In chest: "
+  },
+  "chest": {
+    "cb": {
+      "number": "Number: ",
+      "code": "Code: ",
+      "crypto": "CVV: ",
+      "expiration_date": "Expiration date: ",
+      "label": "Name: "
+    },
+    "code": {
+      "code": "Code: "
+    },
+    "credential": {
+      "id": "Username: ",
+      "password": "Password: ",
+      "address": "Address: "
+    },
+    "secret": "Enter the key",
+    "submit": "Submit",
+    "keyoff": "Remove key",
+    "GET_CHEST_USECASE_WRONG_SECRET": "Wrong key",
+    "newThing": "New",
+    "note": {
+      "note": "Note: "
+    },
+    "export": "Export",
+    "leave": "Leave",
+    "leaved": "Chest left",
+    "leaveTitle": "Hide this chest",
+    "copy": {
+      "credential": {
+        "id": "Username copied",
+        "password": "Password copied",
+        "address": "Address copied"
+      },
+      "cb": {
+        "number": "Number copied",
+        "code": "Code copied",
+        "crypto": "CVV copied",
+        "label": "Name copied",
+        "expiration_date": "Expiration date copied"
+      },
+      "code": {
+        "code": "Code copied"
+      },
+      "note": {
+        "note": "Note copied"
+      },
+      "totp": {
+        "secret": "Secret key copied",
+        "token": "Token copied"
+      }
+    }
+  },
+  "common": {
+    "done": "Confirm",
+    "cancel": "Cancel",
+    "create": "Create",
+    "loading": "Loading..."
+  },
+  "password": {
+    "title": "Password",
+    "length": "Length",
+    "generate": "Generate",
+    "FAIL": "Generation failed",
+    "generated": "Password: ",
+    "sucess": "Successfully generated and copied",
+    "specials": "Special characters"
   }
 }

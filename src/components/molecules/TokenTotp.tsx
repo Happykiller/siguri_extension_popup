@@ -3,7 +3,7 @@ import { authenticator } from 'otplib';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AccessTime, ContentCopy } from '@mui/icons-material';
-import { Box, Grid2 as Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { Box, Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
 
 import { useSecureCopy } from '@components/hooks/useSecureCopy';
 

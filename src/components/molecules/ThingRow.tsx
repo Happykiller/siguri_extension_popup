@@ -4,7 +4,7 @@ import PasswordIcon from '@mui/icons-material/Password';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import { Grid2 as Grid, Tooltip, Typography, useTheme } from '@mui/material';
+import { Grid, Tooltip, Typography, useTheme } from '@mui/material';
 
 import { THING_TYPES } from '@src/common/thingTypes';
 import { ThingUsecaseModel } from '@usecase/model/thing.usecase.model';

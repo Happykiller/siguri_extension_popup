@@ -1,18 +1,29 @@
-// src\stores\contextStore.tsx
+// src\stores\cookieStore.tsx
 import { create } from 'zustand';
 
 import config from '@src/common/config';
 
 export interface CookieState {
   access_token: string | null;
+  chests_secret: [] | null;
+  code: string | null;
+  id: string | null;
+  name_first: string | null;
+  name_last: string | null;
+  themeMode: string | null;
   hydrated: boolean;
   hydrate: () => Promise<void>;
 }
 
 export const cookieStore = create<CookieState>()((set) => ({
   access_token: null,
-  hydrated: false,
   chests_secret: [],
+  code: null,
+  id: null,
+  name_first: null,
+  name_last: null,
+  themeMode: null,
+  hydrated: false,
 
   hydrate: async () => {
     try {
@@ -31,6 +42,12 @@ export const cookieStore = create<CookieState>()((set) => ({
 
               set({
                 access_token: state.access_token ?? null,
+                chests_secret: state.chests_secret,
+                code: state.code,
+                id: state.id,
+                name_first: state.name_first,
+                name_last: state.name_last,
+                themeMode: state.themeMode,
                 hydrated: true,
               });
             } catch (err) {
